@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{B073624C-1C3D-460F-ABD7-44A3402284A3}|Default" NuGet.AddPackagesDialog.IncludePrerelease="True">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ImageEditor_v3/ViewModels/MainViewModel.cs">
+    <Files>
+      <File FileName="ImageEditor_v3/MainActivity.cs" Line="70" Column="63" />
+      <File FileName="ImageEditor_v3/Models/Model.cs" Line="40" Column="35" />
+      <File FileName="ImageEditor_v3/ViewModels/MainViewModel.cs" Line="97" Column="10" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ImageEditor_v3" expanded="True">
+            <Node name="ImageEditor_v3" expanded="True">
+              <Node name="Models" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Resources" expanded="True">
+                <Node name="layout" expanded="True" />
+              </Node>
+              <Node name="ViewModels" expanded="True">
+                <Node name="MainViewModel.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.ImageEditor__v3 AndroidDesignerPreferredTheme="AppTheme" AndroidDesignerPreferredDevice="Nexus 4" PreferredExecutionTarget="Android.my_device" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/martinsoukup/Documents/Škola/PRG/Xamarin/ImageEditor_v3/ImageEditor_v3/Resources/layout/activity_main.axml" relfile="ImageEditor_v3/Resources/layout/activity_main.axml" line="20" column="12" />
+      <Breakpoint file="/Users/martinsoukup/Documents/Škola/PRG/Xamarin/ImageEditor_v3/ImageEditor_v3/Resources/layout/activity_main.axml" relfile="ImageEditor_v3/Resources/layout/activity_main.axml" line="15" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
