@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Android.App;
-using Android.Content;
-using Android.Graphics;
+﻿using Android.Graphics;
 
 namespace ImageEditor_v3.Models
 {
@@ -18,13 +13,6 @@ namespace ImageEditor_v3.Models
         public Model()
         {
         }
-
-        /*public Bitmap CreateBitmap(int requestCode, Result resultCode, Intent data)
-        {
-            var inputStream = ContentResolver.OpenInputStream(data.Data);
-            Bitmap bitmap = BitmapFactory.DecodeStream(ContentResolver.OpenInputStream(data.Data));
-            return bitmap;
-        }*/
 
         public Bitmap ExposureChanged(Bitmap oldBtm, float value)
         {

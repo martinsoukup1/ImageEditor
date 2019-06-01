@@ -2,12 +2,11 @@
 using Android.App;
 using Android.Content;
 using Android.Graphics;
-using Android.Graphics.Drawables;
 using GalaSoft.MvvmLight.Command;
 using ImageEditor_v3.Models;
-using MvvmCross;
 using MvvmCross.ViewModels;
 using System.IO;
+using Android.Provider;
 
 namespace ImageEditor_v3.ViewModels
 {
@@ -17,9 +16,10 @@ namespace ImageEditor_v3.ViewModels
         //Data
         private Bitmap editImageBtm;
         private Bitmap imageBtm;
-        private Android.Net.Uri imageUri;
         private Model md;
+        private Activity act;
 
+        private static readonly int SELECT_FILE = 1;
 
 
         //Commandy
@@ -28,23 +28,14 @@ namespace ImageEditor_v3.ViewModels
 
 
 
-        public MainViewModel()
+        public MainViewModel(Activity act)
         {
-            ImageCommand = new RelayCommand(ImageSelect);
+            this.act = act;
+
+            ImageCommand = new RelayCommand(SelectImage);
             SaveImageCommand = new RelayCommand(SaveImage);
+
             md = new Model();
-
-            /*Bitmap test = Bitmap.CreateBitmap(100, 100, Bitmap.Config.Argb8888);
-            Bitmap test2 = Bitmap.CreateBitmap(100, 100, Bitmap.Config.Argb8888);
-            Paint p = new Paint();
-            p.SetARGB(3000, 2000, 110, 20);
-            Canvas canvas = new Canvas(test2);
-            canvas.DrawBitmap(test, new Matrix(), p);
-
-            EditImageBtm = test2;*/
-
-            Bitmap bm = BitmapFactory.DecodeFile("donut.png");
-            editImageBtm = bm;
         }
 
 
@@ -70,55 +61,23 @@ namespace ImageEditor_v3.ViewModels
             }
         }
 
-        public Android.Net.Uri ImageUri
-        {
-            get { return imageUri; }
-            set
-            {
-                imageUri = value;
-                RaisePropertyChanged(() => ImageUri);
-            }
-        }
-
 
 
         //Metody
-        public void ImageSelect()
+        public void SelectImage()
         {
-            //ImageUri = uri;
-            //editImageBtm = md.CreateBitmap(imageUri);
-            Bitmap test = Bitmap.CreateBitmap(100, 100, Bitmap.Config.Argb8888);
-            Paint p = new Paint();
-            p.SetARGB(3000, 2000, 110,20);
-            Canvas canvas = new Canvas(test);
-            canvas.DrawBitmap(test, new Matrix(), p);
-
-            EditImageBtm = test;
-        }
-
-        public void SaveImage()
-        {
-            string documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string ImagesFolder = System.IO.Path.Combine(documentsFolder, "ImageEditor");
-            string filename = System.IO.Path.Combine(ImagesFolder, "picture.jpg");
-
-            FileStream fs = null;
-            try
+            Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(this.act);
+            Android.App.AlertDialog alert = dialog.Create();
+            alert.SetTitle("Select Image");
+            alert.SetMessage("Select image from");
+            alert.SetButton2("Gallery", (c, ev) =>
             {
-                using (fs = new FileStream(filename, FileMode.Create))
-                {
-                    EditImageBtm.Compress(Bitmap.CompressFormat.Jpeg, 8, fs);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("SaveImage exception: " + e.Message);
-            }
-            finally
-            {
-                if (fs != null)
-                    fs.Close();
-            }
+                var intent = new Intent(Intent.ActionPick, MediaStore.Images.Media.ExternalContentUri);
+                intent.SetType("image/*");
+                this.act.StartActivityForResult(Intent.CreateChooser(intent, "Select Picture"), SELECT_FILE);
+            });
+            alert.SetButton3("CANCEL", (c, ev) => { });
+            alert.Show();
 
         }
 
@@ -133,6 +92,25 @@ namespace ImageEditor_v3.ViewModels
         public void SaturationChanged(float value)
         {
             EditImageBtm = md.SaturationChanged(ImageBtm, value);
+        }
+
+        //Ukládá, ale v galerii neukazuje
+        public void SaveImage()
+        {
+            try
+            {
+                string myDate = DateTime.Now.TimeOfDay.ToString() + ".jpg";
+                using (var os = new System.IO.FileStream(Android.OS.Environment.ExternalStorageDirectory + "/DCIM/Camera/" + myDate, System.IO.FileMode.CreateNew))
+                {
+                    EditImageBtm.Compress(Bitmap.CompressFormat.Jpeg, 95, os);
+                    Console.WriteLine("image saved");
+                    os.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
     }

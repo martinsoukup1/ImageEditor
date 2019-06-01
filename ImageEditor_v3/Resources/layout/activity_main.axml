@@ -11,8 +11,7 @@
 		android:layout_height="350dp"
 		android:scaleType="centerInside"
 		android:id="@+id/imageViewer"
-		android:layout_margin="5dp"
-        local:MvxBind="Bitmap EditImageBtm"/>
+		android:layout_margin="5dp"/>
     <Button
         android:text="Select Image"
         android:layout_width="fill_parent"
