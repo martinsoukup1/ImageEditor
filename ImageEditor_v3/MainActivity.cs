@@ -30,6 +30,9 @@ namespace ImageEditor_v3
 
         MainViewModel vm;
 
+        Android.App.AlertDialog.Builder dialog;
+        Android.App.AlertDialog alert;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,6 +41,7 @@ namespace ImageEditor_v3
             SetContentView(Resource.Layout.activity_main);
 
             vm = new MainViewModel(this);
+            vm.IsSelected = false;
 
             exposure = FindViewById<SeekBar>(Resource.Id.exposure);
             exposure.ProgressChanged += ExposureChanged;
@@ -60,7 +64,11 @@ namespace ImageEditor_v3
             selectImg.SetCommand("Click", vm.ImageCommand);
             savetImg.SetCommand("Click", vm.SaveImageCommand);
 
-
+            dialog = new Android.App.AlertDialog.Builder(this);
+            alert = dialog.Create();
+            alert.SetTitle("Select Image");
+            alert.SetMessage("image not selected!!");
+            alert.SetButton3("OK", (c, ev) => { });
 
 
 
@@ -89,28 +97,63 @@ namespace ImageEditor_v3
         protected override void OnPause()
         {
             base.OnPause();
-            this.vm.PropertyChanged -= Vm_PropertyChanged; ;
+            this.vm.PropertyChanged -= Vm_PropertyChanged;
         }
 
         private void ExposureChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
-            float value = (e.Progress -100);
+            if (vm.IsSelected)
+            {
+                float value = (e.Progress - 100);
 
-            vm.ExposureChanged(value);
+                vm.ExposureChanged(value);
+            }
+            else
+            {
+                alert.Show();
+                ResetSlider();
+            }
+
         }
 
         private void ContrastChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
-            float value = (e.Progress - 100);
+            if (vm.IsSelected)
+            {
+                float value = (e.Progress - 100);
 
-            vm.ContrastChanged(value);
+                vm.ContrastChanged(value);
+            }
+            else
+            {
+                alert.Show();
+                ResetSlider();
+
+            }
+
         }
 
         private void SaturatinChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
-            float value = (e.Progress*0.01f);
+            if (vm.IsSelected)
+            {
+                float value = (e.Progress * 0.01f);
 
-            vm.SaturationChanged(value);
+                vm.SaturationChanged(value);
+            }
+            else
+            {
+                alert.Show();
+                ResetSlider();
+
+            }
+        }
+
+        private void ResetSlider()
+        {
+            exposure.Progress = 100;
+            contrast.Progress = 100;
+            saturation.Progress = 100;
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -122,12 +165,11 @@ namespace ImageEditor_v3
             {
                 if (requestCode == SELECT_FILE)
                 {
+                    vm.IsSelected = true;
                     vm.EditImageBtm = Android.Provider.MediaStore.Images.Media.GetBitmap(this.ContentResolver, data.Data);
                     vm.ImageBtm = Android.Provider.MediaStore.Images.Media.GetBitmap(this.ContentResolver, data.Data);
 
-                    exposure.Progress = 100;
-                    contrast.Progress = 100;
-                    saturation.Progress = 100;
+                    ResetSlider();
                 }
             }
         }

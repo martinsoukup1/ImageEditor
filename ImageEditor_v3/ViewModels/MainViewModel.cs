@@ -7,6 +7,7 @@ using ImageEditor_v3.Models;
 using MvvmCross.ViewModels;
 using System.IO;
 using Android.Provider;
+using Android.Widget;
 
 namespace ImageEditor_v3.ViewModels
 {
@@ -16,8 +17,12 @@ namespace ImageEditor_v3.ViewModels
         //Data
         private Bitmap editImageBtm;
         private Bitmap imageBtm;
+        private bool isSelected;
         private Model md;
         private Activity act;
+
+        Android.App.AlertDialog.Builder dialog;
+        Android.App.AlertDialog alert;
 
         private static readonly int SELECT_FILE = 1;
 
@@ -32,6 +37,8 @@ namespace ImageEditor_v3.ViewModels
         {
             this.act = act;
 
+            isSelected = false;
+
             ImageCommand = new RelayCommand(SelectImage);
             SaveImageCommand = new RelayCommand(SaveImage);
 
@@ -41,6 +48,15 @@ namespace ImageEditor_v3.ViewModels
 
 
         //Property
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
+            }
+        }
         public Bitmap EditImageBtm
         {
             get { return editImageBtm; }
@@ -66,8 +82,8 @@ namespace ImageEditor_v3.ViewModels
         //Metody
         public void SelectImage()
         {
-            Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(this.act);
-            Android.App.AlertDialog alert = dialog.Create();
+            dialog = new Android.App.AlertDialog.Builder(this.act);
+            alert = dialog.Create();
             alert.SetTitle("Select Image");
             alert.SetMessage("Select image from");
             alert.SetButton2("Gallery", (c, ev) =>
@@ -97,20 +113,25 @@ namespace ImageEditor_v3.ViewModels
         //Ukládá, ale v galerii neukazuje
         public void SaveImage()
         {
-            try
+            if (IsSelected)
             {
-                string myDate = DateTime.Now.TimeOfDay.ToString() + ".jpg";
-                using (var os = new System.IO.FileStream(Android.OS.Environment.ExternalStorageDirectory + "/DCIM/Camera/" + myDate, System.IO.FileMode.CreateNew))
+                bool saved = md.SaveImage(EditImageBtm);
+                if (saved)
                 {
-                    EditImageBtm.Compress(Bitmap.CompressFormat.Jpeg, 95, os);
-                    Console.WriteLine("image saved");
-                    os.Close();
+                    var toast = Toast.MakeText(act, "Image saved", ToastLength.Short);
+                    toast.Show();
                 }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
+                dialog = new Android.App.AlertDialog.Builder(this.act);
+                alert = dialog.Create();
+                alert.SetTitle("Select Image");
+                alert.SetMessage("image not selected!!");
+                alert.SetButton3("OK", (c, ev) => { });
+                alert.Show();
             }
+
         }
 
     }

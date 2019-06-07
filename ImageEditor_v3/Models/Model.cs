@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+﻿using System;
+using Android.App;
+using Android.Graphics;
 
 namespace ImageEditor_v3.Models
 {
@@ -69,6 +71,28 @@ namespace ImageEditor_v3.Models
 
             canvas.DrawBitmap(oldBtm, new Matrix(), paint);
             return newBtm;
+        }
+
+        public bool SaveImage(Bitmap btm)
+        {
+            try
+            {
+                string myDate = DateTime.Now.TimeOfDay.ToString() + ".jpg";
+                using (var os = new System.IO.FileStream(Android.OS.Environment.ExternalStorageDirectory + "/DCIM/Camera/" + myDate, System.IO.FileMode.CreateNew))
+                {
+                    btm.Compress(Bitmap.CompressFormat.Jpeg, 95, os);
+                    Console.WriteLine("image saved");
+                    os.Close();
+                }
+
+               
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
 
     }
