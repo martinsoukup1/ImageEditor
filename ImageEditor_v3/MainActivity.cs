@@ -16,7 +16,8 @@ namespace ImageEditor_v3
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : ActivityBase
     {
-        
+
+        //Deklarace proměnných
         SeekBar exposure;
         SeekBar contrast;
         SeekBar saturation;
@@ -32,6 +33,7 @@ namespace ImageEditor_v3
 
         Android.App.AlertDialog.Builder dialog;
         Android.App.AlertDialog alert;
+        //
 
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -43,6 +45,7 @@ namespace ImageEditor_v3
             vm = new MainViewModel(this);
             vm.IsSelected = false;
 
+            //přidělení activity_main.axml tool-objektů do proměnných 
             exposure = FindViewById<SeekBar>(Resource.Id.exposure);
             exposure.ProgressChanged += ExposureChanged;
 
@@ -58,12 +61,14 @@ namespace ImageEditor_v3
 
             imgView = FindViewById<ImageView>(Resource.Id.imageViewer);
 
-
+            //nastavení bindingu pro ImageView, která bude bindovat property EditImageBtm z MainViewModelu
             this.SetBinding(() => vm.EditImageBtm, () => imgView.Resources);
 
+            //nastavení commandů
             selectImg.SetCommand("Click", vm.ImageCommand);
             savetImg.SetCommand("Click", vm.SaveImageCommand);
 
+            //vytvoření dialogu, připraveného pro zobrazení, pokud není načtena fotka pro editaci
             dialog = new Android.App.AlertDialog.Builder(this);
             alert = dialog.Create();
             alert.SetTitle("Select Image");
@@ -74,6 +79,8 @@ namespace ImageEditor_v3
 
         }
 
+
+        //Metody, které kontrolují správné bindování fotky z property EditImageBtm do ImageView.
         protected override void OnResume()
         {
             base.OnResume();
@@ -100,6 +107,11 @@ namespace ImageEditor_v3
             this.vm.PropertyChanged -= Vm_PropertyChanged;
         }
 
+
+
+
+        //Metoda pro změnu světelnosti, pokud je načtena fotka pro editaci, zavolá se metoda v MainViewModel, do které se předá parametr hodnota seekbaru, pokud není vybrána fotka
+        //zobrazí se alert a zresetuje se poloha seekbaru
         private void ExposureChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
             if (vm.IsSelected)
@@ -116,6 +128,8 @@ namespace ImageEditor_v3
 
         }
 
+        //Metoda pro změnu kontrastu, pokud je načtena fotka pro editaci, zavolá se metoda v MainViewModel, do které se předá parametr hodnota seekbaru, pokud není vybrána fotka
+        //zobrazí se alert a zresetuje se poloha seekbaru
         private void ContrastChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
             if (vm.IsSelected)
@@ -133,6 +147,8 @@ namespace ImageEditor_v3
 
         }
 
+        //Metoda pro změnu saturace, pokud je načtena fotka pro editaci, zavolá se metoda v MainViewModel, do které se předá parametr hodnota seekbaru, pokud není vybrána fotka
+        //zobrazí se alert a zresetuje se poloha seekbaru
         private void SaturatinChanged(object sender, SeekBar.ProgressChangedEventArgs e)
         {
             if (vm.IsSelected)
@@ -149,6 +165,7 @@ namespace ImageEditor_v3
             }
         }
 
+        //Metoda pro zresetování seekbarů do původní poozice (prostředek)
         private void ResetSlider()
         {
             exposure.Progress = 100;
@@ -156,6 +173,8 @@ namespace ImageEditor_v3
             saturation.Progress = 100;
         }
 
+        //po dokončení intentu pro výber fotky z galerie se nastaví proměnná, která říká, že je fotka vybrán, z fotky se udělá bitmapa a uloží se do properties v MainViewModel.
+        //Vyresetuje se poloha seekbarů.
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);

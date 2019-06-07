@@ -13,7 +13,7 @@ namespace ImageEditor_v3.ViewModels
 {
     public class MainViewModel : MvxViewModel
     {
-
+        //deklarace proměnných
         //Data
         private Bitmap editImageBtm;
         private Bitmap imageBtm;
@@ -32,7 +32,7 @@ namespace ImageEditor_v3.ViewModels
         public RelayCommand SaveImageCommand { get; private set; }
 
 
-
+        //v konstruktoru se přiřadí hodnoty proměnným a předá se sem aktuální activita, která nám umožňuje z této třídy zobrazovat alerty do aplikace uživateli.
         public MainViewModel(Activity act)
         {
             this.act = act;
@@ -47,7 +47,7 @@ namespace ImageEditor_v3.ViewModels
 
 
 
-        //Property
+        //Property pokud je fotka vybrána
         public bool IsSelected
         {
             get { return isSelected; }
@@ -57,6 +57,8 @@ namespace ImageEditor_v3.ViewModels
                 RaisePropertyChanged(() => IsSelected);
             }
         }
+
+        //property pro upravenou bitmapu
         public Bitmap EditImageBtm
         {
             get { return editImageBtm; }
@@ -67,6 +69,7 @@ namespace ImageEditor_v3.ViewModels
             }
         }
 
+        //property pro původní bitmapu, která se předává pokaždé je zavolána metoda pro úoravu, aby se předešlo stackování úprav na sebe
         public Bitmap ImageBtm
         {
             get { return imageBtm; }
@@ -80,6 +83,8 @@ namespace ImageEditor_v3.ViewModels
 
 
         //Metody
+        //Po stisknutí tlačítka se uživateli zobrazí alert, odkud chce fotku vybrat (budoucí možnost pro výběr i z foťáku, nepodařilo se mi rozchodit), pokud je vybraná galerie,
+        //spustí se intent pro výběr obrázku z galerie, ta se otevře a uživatel má možnost vybrat fotku.
         public void SelectImage()
         {
             dialog = new Android.App.AlertDialog.Builder(this.act);
@@ -97,6 +102,8 @@ namespace ImageEditor_v3.ViewModels
 
         }
 
+
+        //metody, které volají metody na úpravu fotek z modelu
         public void ExposureChanged(float value)
         {
             EditImageBtm = md.ExposureChanged(ImageBtm, value);
@@ -110,7 +117,8 @@ namespace ImageEditor_v3.ViewModels
             EditImageBtm = md.SaturationChanged(ImageBtm, value);
         }
 
-        //Ukládá, ale v galerii neukazuje
+        //metoda, která porovná zda je fotka vybraná nebo ne, pokud ne vyhodí alert, pokud ano, zavolá metodu v modelu pro úoravu obrázku, která pokud vrátí uspěšné uložení, tak se zobrazí v aplikaci
+        //toast, že fotka byla uložena
         public void SaveImage()
         {
             if (IsSelected)
